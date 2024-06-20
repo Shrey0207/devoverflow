@@ -1,8 +1,8 @@
 import Link from "next/link";
 import React from "react";
 import RenderTag from "../shared/RenderTag";
-import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 import Metric from "../shared/Metric";
+import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 
 interface QuestionProps {
   _id: string;
