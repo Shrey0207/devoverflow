@@ -12,6 +12,18 @@ import ProfileLink from "@/components/shared/ProfileLink";
 import Stats from "@/components/shared/Stats";
 import QuestionTab from "@/components/shared/QuestionTab";
 import AnswersTab from "@/components/shared/AnswersTab";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: URLProps): Promise<Metadata> {
+  const userInfo = await getUserInfo({ userId: params.id });
+  return {
+    title: `${userInfo.user.name} Profile | Dev Overflow`,
+    description: `View ${userInfo.user.name}'s profile on Dev Overflow - A community-driven platform for asking and answering programming questions. Get help, share knowledge and collaborate with developers from around the world. Explore topics in web developments, mobile app development, algorithms, data structures and more...`,
+  };
+}
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
@@ -28,7 +40,6 @@ const Page = async ({ params, searchParams }: URLProps) => {
             height={140}
             className="rounded-full object-cover"
           />
-
           <div className="mt-3">
             <h2 className="h2-bold text-dark100_light900">
               {userInfo.user.name}
@@ -36,7 +47,6 @@ const Page = async ({ params, searchParams }: URLProps) => {
             <p className="paragraph-regular text-dark200_light800">
               @{userInfo.user.username}
             </p>
-
             <div className="mt-5 flex flex-wrap items-center justify-start gap-5">
               {userInfo.user.portfolioWebsite && (
                 <ProfileLink
@@ -45,20 +55,17 @@ const Page = async ({ params, searchParams }: URLProps) => {
                   title="Portfolio"
                 />
               )}
-
               {userInfo.user.location && (
                 <ProfileLink
                   imgUrl="/assets/icons/location.svg"
                   title={userInfo.user.location}
                 />
               )}
-
               <ProfileLink
                 imgUrl="/assets/icons/calendar.svg"
                 title={getJoinedDate(userInfo.user.joinedAt)}
               />
             </div>
-
             {userInfo.user.bio && (
               <p className="paragraph-regular text-dark400_light800 mt-8">
                 {userInfo.user.bio}
@@ -66,7 +73,6 @@ const Page = async ({ params, searchParams }: URLProps) => {
             )}
           </div>
         </div>
-
         <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
           <SignedIn>
             {clerkId === userInfo.user.clerkId && (
@@ -79,14 +85,12 @@ const Page = async ({ params, searchParams }: URLProps) => {
           </SignedIn>
         </div>
       </div>
-
       <Stats
         reputation={userInfo.reputation}
         totalQuestions={userInfo.totalQuestions}
         totalAnswers={userInfo.totalAnswers}
         badges={userInfo.badgeCounts}
       />
-
       <div className="mt-10 flex gap-10">
         <Tabs defaultValue="top-posts" className="flex-1">
           <TabsList className="background-light800_dark400 min-h-[42px] p-1">
@@ -97,14 +101,17 @@ const Page = async ({ params, searchParams }: URLProps) => {
               Answers
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="top-posts">
+          <TabsContent
+            value="top-posts"
+            className="mt-4 flex w-full flex-col gap-4"
+          >
             <QuestionTab
               searchParams={searchParams}
               userId={userInfo.user._id}
               clerkId={clerkId}
             />
           </TabsContent>
-          <TabsContent value="answers" className="flex w-full flex-col gap-6">
+          <TabsContent value="answers" className="flex w-full flex-col gap-4">
             <AnswersTab
               searchParams={searchParams}
               userId={userInfo.user._id}
